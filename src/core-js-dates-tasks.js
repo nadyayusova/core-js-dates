@@ -70,13 +70,17 @@ function getDayName(date) {
  * Date('2024-02-03T00:00:00Z') => Date('2024-02-09T00:00:00Z')
  * Date('2024-02-13T00:00:00Z') => Date('2024-02-16T00:00:00Z')
  * Date('2024-02-16T00:00:00Z') => Date('2024-02-23T00:00:00Z')
- *
- * let time = date.getTime();
- * time += 7 * 24 * 60 * 60 * 1000;
- * return new Date(time);
  */
-function getNextFriday(/* date */) {
-  throw new Error('Not implemented');
+function getNextFriday(date) {
+  const day = date.getDay();
+  let diff = 5 - day;
+  if (diff <= 0) {
+    diff += 7;
+  }
+
+  const time = date.getTime();
+
+  return new Date(time + diff * 24 * 60 * 60 * 1000);
 }
 
 /**
@@ -105,8 +109,15 @@ function getCountDaysInMonth(month, year) {
  * '2024-02-01T00:00:00.000Z', '2024-02-02T00:00:00.000Z'  => 2
  * '2024-02-01T00:00:00.000Z', '2024-02-12T00:00:00.000Z'  => 12
  */
-function getCountDaysOnPeriod(/* dateStart, dateEnd */) {
-  throw new Error('Not implemented');
+function getCountDaysOnPeriod(dateStart, dateEnd) {
+  const time1 = Date.parse(dateStart);
+  const time2 = Date.parse(dateEnd);
+
+  const day = 24 * 60 * 60 * 1000;
+
+  const diff = time2 - time1;
+
+  return Math.floor(diff / day) + 1;
 }
 
 /**
@@ -126,8 +137,12 @@ function getCountDaysOnPeriod(/* dateStart, dateEnd */) {
  * '2024-02-02', { start: '2024-02-02', end: '2024-03-02' } => true
  * '2024-02-10', { start: '2024-02-02', end: '2024-03-02' } => true
  */
-function isDateInPeriod(/* date, period */) {
-  throw new Error('Not implemented');
+function isDateInPeriod(date, period) {
+  const time1 = Date.parse(period.start);
+  const time2 = Date.parse(period.end);
+  const dateToCheck = Date.parse(date);
+
+  return dateToCheck >= time1 && dateToCheck <= time2;
 }
 
 /**
@@ -141,8 +156,11 @@ function isDateInPeriod(/* date, period */) {
  * '1999-01-05T02:20:00.000Z' => '1/5/1999, 2:20:00 AM'
  * '2010-12-15T22:59:00.000Z' => '12/15/2010, 10:59:00 PM'
  */
-function formatDate(/* date */) {
-  throw new Error('Not implemented');
+function formatDate(date) {
+  const dateInMs = Date.parse(date);
+  const timezoneDiff = new Date().getTimezoneOffset();
+  const utcDate = new Date(dateInMs + timezoneDiff * 60 * 1000);
+  return utcDate.toLocaleString('en-US');
 }
 
 /**
